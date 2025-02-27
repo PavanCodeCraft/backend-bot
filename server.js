@@ -1,6 +1,5 @@
 import express from "express";
 import cors from "cors";
-import fetch from "node-fetch";
 import dotenv from "dotenv";
 
 dotenv.config();
@@ -8,21 +7,21 @@ dotenv.config();
 const app = express();
 app.use(express.json());
 
-// Allow frontend to access the backend
-app.use(cors({
-    origin: "*",
-    methods: ["GET", "POST"],
-    credentials: true 
-}));
+// Allow frontend access
+app.use(
+    cors({
+        origin: "https://your-frontend-url.vercel.app", // ✅ Use your actual frontend URL
+        methods: ["GET", "POST"],
+        credentials: true,
+    })
+);
 
 const API_KEY = process.env.GEMINI_API_KEY;
 
-// Root route (optional)
 app.get("/", (req, res) => {
     res.send("Backend is running...");
 });
 
-// Chat API route
 app.post("/api/chat", async (req, res) => {
     try {
         console.log("Received request:", req.body); // Debugging
@@ -45,4 +44,4 @@ app.post("/api/chat", async (req, res) => {
 });
 
 const PORT = process.env.PORT || 5000;
-app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
+app.listen(PORT, () => console.log(`✅ Server running on port ${PORT}`));
