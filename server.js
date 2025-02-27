@@ -7,12 +7,26 @@ dotenv.config();
 
 const app = express();
 app.use(express.json());
-app.use(cors());
 
-const API_KEY = process.env.GEMINI_API_KEY; // Store API key in .env file
+// Allow frontend to access the backend
+app.use(cors({
+    origin: "*",
+    methods: ["GET", "POST"],
+    credentials: true 
+}));
 
+const API_KEY = process.env.GEMINI_API_KEY;
+
+// Root route (optional)
+app.get("/", (req, res) => {
+    res.send("Backend is running...");
+});
+
+// Chat API route
 app.post("/api/chat", async (req, res) => {
     try {
+        console.log("Received request:", req.body); // Debugging
+
         const response = await fetch(
             `https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:generateContent?key=${API_KEY}`,
             {
@@ -25,6 +39,7 @@ app.post("/api/chat", async (req, res) => {
         const data = await response.json();
         res.json(data);
     } catch (error) {
+        console.error("Backend Error:", error);
         res.status(500).json({ error: "Something went wrong" });
     }
 });
